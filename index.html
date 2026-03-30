@@ -3,7 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Наша встреча ❤️</title>
+    <title>Наша встреча ❤️ 14.02.2027</title>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-database.js";
+        
+        const firebaseConfig = {
+            apiKey: "AIzaSyARnPbOhMIUMbK9MCPhCixwFkGPYxKP91E",
+            authDomain: "f27-e1de3.firebaseapp.com",
+            databaseURL: "https://f27-e1de3-default-rtdb.firebaseio.com",
+            projectId: "f27-e1de3",
+            storageBucket: "f27-e1de3.firebasestorage.app",
+            messagingSenderId: "979269001667",
+            appId: "1:979269001667:web:1d31ac563de1cf2eba1d76",
+            measurementId: "G-WDDT7857D0"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        window.db = db;
+        window.ref = ref;
+        window.set = set;
+        window.onValue = onValue;
+        window.push = push;
+    </script>
+    
     <style>
         * {
             margin: 0;
@@ -31,18 +58,8 @@
             width: 100%;
         }
         
-        h1 {
-            color: #ff4081;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-        
-        .date {
-            font-size: 1.5em;
-            color: #667eea;
-            margin-bottom: 30px;
-            font-weight: bold;
-        }
+        h1 { color: #ff4081; font-size: 2em; margin-bottom: 20px; }
+        .date { font-size: 1.5em; color: #667eea; margin-bottom: 30px; font-weight: bold; }
         
         .auth-section {
             background: #f9f9f9;
@@ -52,91 +69,17 @@
             border: 2px solid #e0e0e0;
         }
         
-        .auth-title {
-            font-size: 1.1em;
-            color: #667eea;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
+        .auth-title { font-size: 1.1em; color: #667eea; margin-bottom: 15px; font-weight: bold; }
+        .auth-input { width: 80%; padding: 12px; font-size: 1em; border: 2px solid #ddd; border-radius: 10px; text-align: center; margin-bottom: 15px; }
+        .auth-button { background: #667eea; color: white; border: none; padding: 10px 25px; font-size: 1em; border-radius: 10px; cursor: pointer; margin: 5px; }
+        .auth-button:hover { transform: scale(1.05); background: #5a67d8; }
         
-        .auth-input {
-            width: 80%;
-            padding: 12px;
-            font-size: 1em;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 15px;
-        }
+        .test-mode { margin-top: 15px; padding: 10px; background: #fff3e0; border-radius: 10px; }
+        .test-mode label { cursor: pointer; color: #e67e22; display: flex; align-items: center; justify-content: center; gap: 8px; }
         
-        .auth-input:focus {
-            outline: none;
-            border-color: #ff4081;
-        }
-        
-        .auth-button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            font-size: 1em;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin: 5px;
-        }
-        
-        .auth-button:hover {
-            transform: scale(1.05);
-            background: #5a67d8;
-        }
-        
-        .reset-button {
-            background: #ff9800;
-        }
-        
-        .reset-button:hover {
-            background: #f57c00;
-        }
-        
-        .test-mode {
-            margin-top: 15px;
-            padding: 10px;
-            background: #fff3e0;
-            border-radius: 10px;
-        }
-        
-        .test-mode label {
-            cursor: pointer;
-            color: #e67e22;
-            font-size: 0.9em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .user-info {
-            background: #e8f5e9;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 25px;
-            display: none;
-        }
-        
-        .user-name {
-            font-size: 1.2em;
-            color: #2e7d32;
-            font-weight: bold;
-        }
-        
-        .logout-link {
-            margin-top: 10px;
-            font-size: 0.8em;
-            color: #ff4081;
-            cursor: pointer;
-            text-decoration: underline;
-        }
+        .user-info { background: #e8f5e9; border-radius: 15px; padding: 15px; margin-bottom: 25px; display: none; }
+        .user-name { font-size: 1.2em; color: #2e7d32; font-weight: bold; }
+        .logout-link { margin-top: 10px; font-size: 0.8em; color: #ff4081; cursor: pointer; text-decoration: underline; }
         
         .timer-container {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -146,35 +89,12 @@
             color: white;
             display: none;
         }
+        .timer-title { font-size: 0.9em; opacity: 0.9; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
+        .timer { font-size: 2.5em; font-weight: bold; font-family: 'Courier New', monospace; }
         
-        .timer-title {
-            font-size: 0.9em;
-            opacity: 0.9;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        .timer {
-            font-size: 2.5em;
-            font-weight: bold;
-            letter-spacing: 5px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .status {
-            background: #f5f5f5;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: none;
-        }
-        
-        .status-text {
-            font-size: 1.1em;
-            color: #333;
-            margin-bottom: 10px;
-        }
+        .status { background: #f5f5f5; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: none; }
+        .status-text { font-size: 1.1em; color: #333; margin-bottom: 10px; }
+        .other-status { font-size: 0.95em; color: #666; margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; }
         
         .signal {
             background: #ff4081;
@@ -184,43 +104,15 @@
             font-size: 1.1em;
             border-radius: 10px;
             cursor: pointer;
-            transition: transform 0.2s;
             width: 100%;
             max-width: 300px;
             display: none;
         }
+        .signal:hover:not(:disabled) { transform: scale(1.05); background: #e91e63; }
+        .signal:disabled { background: #ccc; cursor: not-allowed; opacity: 0.7; }
         
-        .signal:hover:not(:disabled) {
-            transform: scale(1.05);
-            background: #e91e63;
-        }
-        
-        .signal:active:not(:disabled) {
-            transform: scale(0.95);
-        }
-        
-        .signal:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
-        .info {
-            margin-top: 20px;
-            font-size: 0.9em;
-            color: #999;
-            display: none;
-        }
-        
-        .ready-badge {
-            display: inline-block;
-            background: #4caf50;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            margin-top: 10px;
-        }
+        .info { margin-top: 20px; font-size: 0.9em; color: #999; display: none; }
+        .ready-badge { display: inline-block; background: #4caf50; color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.9em; margin-top: 10px; }
         
         .miracle-message {
             background: linear-gradient(135deg, #ffd89b 0%, #ff4081 100%);
@@ -234,90 +126,17 @@
             display: none;
         }
         
-        .chat-container {
-            margin-top: 30px;
-            border-top: 2px solid #e0e0e0;
-            padding-top: 25px;
-            display: none;
-        }
-        
-        .chat-title {
-            font-size: 1.2em;
-            color: #ff4081;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-        
-        .chat-messages {
-            background: #f9f9f9;
-            border-radius: 15px;
-            padding: 15px;
-            height: 300px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        
-        .chat-message {
-            margin-bottom: 12px;
-            padding: 8px 12px;
-            border-radius: 10px;
-            max-width: 80%;
-            word-wrap: break-word;
-        }
-        
-        .chat-message.my-message {
-            background: #667eea;
-            color: white;
-            margin-left: auto;
-            text-align: right;
-        }
-        
-        .chat-message.other-message {
-            background: #f0f0f0;
-            color: #333;
-            margin-right: auto;
-        }
-        
-        .chat-sender {
-            font-size: 0.8em;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .chat-time {
-            font-size: 0.7em;
-            opacity: 0.7;
-            margin-top: 5px;
-        }
-        
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .chat-input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1em;
-        }
-        
-        .chat-send {
-            background: #ff4081;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .chat-send:hover {
-            transform: scale(1.05);
-            background: #e91e63;
-        }
+        .chat-container { margin-top: 30px; border-top: 2px solid #e0e0e0; padding-top: 25px; display: none; }
+        .chat-title { font-size: 1.2em; color: #ff4081; margin-bottom: 15px; font-weight: bold; }
+        .chat-messages { background: #f9f9f9; border-radius: 15px; padding: 15px; height: 300px; overflow-y: auto; margin-bottom: 15px; text-align: left; }
+        .chat-message { margin-bottom: 12px; padding: 8px 12px; border-radius: 10px; max-width: 80%; word-wrap: break-word; }
+        .chat-message.my-message { background: #667eea; color: white; margin-left: auto; text-align: right; }
+        .chat-message.other-message { background: #f0f0f0; color: #333; margin-right: auto; }
+        .chat-sender { font-size: 0.8em; font-weight: bold; margin-bottom: 5px; }
+        .chat-time { font-size: 0.7em; opacity: 0.7; margin-top: 5px; }
+        .chat-input-area { display: flex; gap: 10px; }
+        .chat-input { flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1em; }
+        .chat-send { background: #ff4081; color: white; border: none; padding: 12px 25px; border-radius: 10px; cursor: pointer; }
         
         @keyframes pulse {
             0% { transform: scale(0.95); opacity: 0; }
@@ -325,19 +144,10 @@
         }
         
         @media (max-width: 480px) {
-            .container {
-                padding: 25px;
-            }
-            .timer {
-                font-size: 1.5em;
-                letter-spacing: 2px;
-            }
-            h1 {
-                font-size: 1.5em;
-            }
-            .chat-message {
-                max-width: 95%;
-            }
+            .container { padding: 25px; }
+            .timer { font-size: 1.5em; letter-spacing: 2px; }
+            h1 { font-size: 1.5em; }
+            .chat-message { max-width: 95%; }
         }
     </style>
 </head>
@@ -346,49 +156,34 @@
         <h1>❤️ Наша встреча ❤️</h1>
         <div class="date">14 февраля 2027 года</div>
         
-        <!-- Секция авторизации -->
         <div class="auth-section" id="authSection">
             <div class="auth-title">✨ Кто ты? ✨</div>
             <input type="text" class="auth-input" id="usernameInput" placeholder="Введите имя">
             <button class="auth-button" onclick="login()">Войти</button>
-            
-            <!-- Тестовый режим -->
             <div class="test-mode">
-                <label>
-                    <input type="checkbox" id="testModeCheckbox" onchange="onTestModeChange()"> 🧪 Тестовый режим (кнопка доступна сейчас)
-                </label>
+                <label><input type="checkbox" id="testModeCheckbox" onchange="onTestModeChange()"> 🧪 Тестовый режим (кнопка доступна сейчас)</label>
             </div>
         </div>
         
-        <!-- Информация о пользователе -->
         <div class="user-info" id="userInfo">
             <div class="user-name" id="userNameDisplay"></div>
-            <div class="logout-link" onclick="logout()">🚪 Выйти и сменить пользователя</div>
+            <div class="logout-link" onclick="logout()">🚪 Выйти</div>
         </div>
         
-        <!-- Таймер -->
         <div class="timer-container" id="timerContainer">
             <div class="timer-title" id="timerTitle">ДО ВСТРЕЧИ ОСТАЛОСЬ</div>
             <div class="timer" id="timer">-- дн -- ч -- мин -- сек</div>
         </div>
         
-        <!-- Статус -->
         <div class="status" id="statusContainer">
-            <div class="status-text" id="statusMessage">Загрузка...</div>
-            <div id="readyStatus"></div>
+            <div class="status-text" id="statusMessage"></div>
+            <div id="otherStatus" class="other-status"></div>
         </div>
         
-        <!-- Кнопка "Я здесь" -->
-        <button class="signal" id="signalButton" onclick="sendSignal()" disabled>
-            ✨ Я здесь! ✨
-        </button>
+        <button class="signal" id="signalButton" onclick="sendSignal()" disabled>✨ Я здесь! ✨</button>
         
-        <!-- Сообщение о чуде -->
-        <div class="miracle-message" id="miracleMessage">
-            🌟 НЕВОЗМОЖНОЕ ВОЗМОЖНО! 🌟
-        </div>
+        <div class="miracle-message" id="miracleMessage">🌟 НЕВОЗМОЖНОЕ ВОЗМОЖНО! 🌟</div>
         
-        <!-- Чат -->
         <div class="chat-container" id="chatContainer">
             <div class="chat-title">💬 Чат встречи</div>
             <div class="chat-messages" id="chatMessages"></div>
@@ -398,50 +193,186 @@
             </div>
         </div>
         
-        <div class="info" id="infoText">
-            Кнопка станет доступна 14 февраля 2027 года.<br>
-            Нажмите её, чтобы другой человек узнал, что вы здесь.
-        </div>
+        <div class="info" id="infoText">Кнопка станет доступна 14 февраля 2027 года.</div>
     </div>
 
-    <script>
-        // Дата встречи: 14 февраля 2027 года
+    <script type="module">
         const meetingDate = new Date(2027, 1, 14, 0, 0, 0);
-        
-        // Допустимые пользователи
-        const validUsers = ['Ася', 'Свят'];
-        
-        // Текущий пользователь
         let currentUser = null;
         
-        // Проверка тестового режима
         function isTestMode() {
             const checkbox = document.getElementById('testModeCheckbox');
             return checkbox ? checkbox.checked : false;
         }
         
-        // Обработчик изменения тестового режима
-        function onTestModeChange() {
-            updateTimer();
-            // Если кнопка стала активной, обновляем статус
-            if (currentUser) {
-                updateStatus();
+        function isButtonActive() {
+            if (isTestMode()) return true;
+            return new Date() >= meetingDate;
+        }
+        
+        function updateTimer() {
+            const timerEl = document.getElementById('timer');
+            const button = document.getElementById('signalButton');
+            const title = document.getElementById('timerTitle');
+            
+            if (isTestMode()) {
+                timerEl.innerHTML = '🧪 ТЕСТОВЫЙ РЕЖИМ 🧪';
+                title.innerHTML = 'КНОПКА ДОСТУПНА';
+                button.disabled = false;
+                return;
+            }
+            
+            const diff = meetingDate - new Date();
+            if (diff <= 0) {
+                timerEl.innerHTML = '🎉 СЕГОДНЯ! 🎉';
+                title.innerHTML = 'ВСТРЕЧА НАЧАЛАСЬ';
+                button.disabled = false;
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000*60*60*24));
+            const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+            const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+            const seconds = Math.floor((diff % (1000*60)) / 1000);
+            timerEl.innerHTML = `${days} дн ${hours} ч ${minutes} мин ${seconds} сек`;
+            title.innerHTML = days > 30 ? 'ДО ВСТРЕЧИ ОСТАЛОСЬ' : '⚡ СКОРО ВСТРЕЧА! ⚡';
+            button.disabled = true;
+        }
+        
+        function updateStatus() {
+            if (!currentUser) return;
+            
+            const otherUser = currentUser === 'Ася' ? 'Свят' : 'Ася';
+            const signalsRef = window.ref(window.db, 'signals');
+            
+            window.onValue(signalsRef, (snapshot) => {
+                const signals = snapshot.val() || {};
+                const mySignal = signals[currentUser];
+                const otherSignal = signals[otherUser];
+                
+                const statusMsg = document.getElementById('statusMessage');
+                const otherDiv = document.getElementById('otherStatus');
+                const miracleMsg = document.getElementById('miracleMessage');
+                const chatContainer = document.getElementById('chatContainer');
+                
+                if (mySignal) {
+                    statusMsg.innerHTML = `✅ Вы отметились! (${mySignal.time})`;
+                    if (otherSignal) {
+                        otherDiv.innerHTML = `<div class="ready-badge">❤️ ${otherUser} уже здесь! (${otherSignal.time})</div>`;
+                        if (miracleMsg.style.display !== 'block') {
+                            miracleMsg.style.display = 'block';
+                            chatContainer.style.display = 'block';
+                            loadMessages();
+                            setTimeout(() => { miracleMsg.style.display = 'none'; }, 10000);
+                        }
+                    } else {
+                        otherDiv.innerHTML = `<div class="ready-badge">⏳ ${otherUser} ещё не отметился(ась)</div>`;
+                    }
+                } else {
+                    statusMsg.innerHTML = `❌ Вы ещё не отметились`;
+                    otherDiv.innerHTML = '';
+                }
+            });
+        }
+        
+        async function sendSignal() {
+            if (!currentUser) return alert('Сначала войдите!');
+            if (!isButtonActive()) return alert('Кнопка станет доступна 14 февраля 2027 года!');
+            
+            const signalsRef = window.ref(window.db, `signals/${currentUser}`);
+            const snapshot = await new Promise(resolve => {
+                window.onValue(signalsRef, resolve, { onlyOnce: true });
+            });
+            
+            if (snapshot.exists()) {
+                alert('Вы уже отметились!');
+                return;
+            }
+            
+            const now = new Date();
+            await window.set(signalsRef, {
+                user: currentUser,
+                time: now.toLocaleString('ru-RU'),
+                timestamp: now.getTime()
+            });
+            
+            updateStatus();
+            
+            const otherUser = currentUser === 'Ася' ? 'Свят' : 'Ася';
+            const otherRef = window.ref(window.db, `signals/${otherUser}`);
+            const otherSnapshot = await new Promise(resolve => {
+                window.onValue(otherRef, resolve, { onlyOnce: true });
+            });
+            
+            if (otherSnapshot.exists()) {
+                alert(`✨ ЧУДО! ${otherUser} тоже здесь! ✨`);
+            } else {
+                alert('✅ Вы отметились!');
             }
         }
         
-        // Проверка, доступна ли кнопка
-        function isButtonActive() {
-            if (isTestMode()) return true;
-            const now = new Date();
-            return now >= meetingDate;
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message || !currentUser) return;
+            
+            const signalsRef = window.ref(window.db, 'signals');
+            const snapshot = await new Promise(resolve => {
+                window.onValue(signalsRef, resolve, { onlyOnce: true });
+            });
+            const signals = snapshot.val() || {};
+            const otherUser = currentUser === 'Ася' ? 'Свят' : 'Ася';
+            
+            if (!signals[currentUser] || !signals[otherUser]) {
+                alert('Чат доступен только после того, как вы оба нажмёте "Я здесь!"');
+                return;
+            }
+            
+            const messagesRef = window.ref(window.db, 'messages');
+            await window.push(messagesRef, {
+                user: currentUser,
+                message: message,
+                time: new Date().toLocaleString('ru-RU'),
+                timestamp: Date.now()
+            });
+            
+            input.value = '';
         }
         
-        // Выход из аккаунта
+        function loadMessages() {
+            if (!currentUser) return;
+            
+            const messagesRef = window.ref(window.db, 'messages');
+            window.onValue(messagesRef, (snapshot) => {
+                const messages = snapshot.val() || {};
+                const messagesArray = Object.values(messages).sort((a,b) => a.timestamp - b.timestamp);
+                const container = document.getElementById('chatMessages');
+                container.innerHTML = '';
+                
+                messagesArray.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = `chat-message ${msg.user === currentUser ? 'my-message' : 'other-message'}`;
+                    div.innerHTML = `<div class="chat-sender">${msg.user}</div><div>${escapeHtml(msg.message)}</div><div class="chat-time">${msg.time}</div>`;
+                    container.appendChild(div);
+                });
+                container.scrollTop = container.scrollHeight;
+            });
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function onTestModeChange() {
+            updateTimer();
+            if (currentUser) updateStatus();
+        }
+        
         function logout() {
             localStorage.removeItem('currentUser');
             currentUser = null;
-            
-            // Показываем секцию входа
             document.getElementById('authSection').style.display = 'block';
             document.getElementById('userInfo').style.display = 'none';
             document.getElementById('timerContainer').style.display = 'none';
@@ -450,311 +381,19 @@
             document.getElementById('infoText').style.display = 'none';
             document.getElementById('chatContainer').style.display = 'none';
             document.getElementById('miracleMessage').style.display = 'none';
-            
-            // Очищаем поле ввода
             document.getElementById('usernameInput').value = '';
         }
         
-        // Функция входа
         function login() {
-            const input = document.getElementById('usernameInput');
-            const name = input.value.trim();
-            
-            if (name === 'Ася' || name === 'Свят') {
-                currentUser = name;
-                
-                // Скрываем секцию авторизации
-                document.getElementById('authSection').style.display = 'none';
-                
-                // Показываем остальные элементы
-                document.getElementById('userInfo').style.display = 'block';
-                document.getElementById('timerContainer').style.display = 'block';
-                document.getElementById('statusContainer').style.display = 'block';
-                document.getElementById('signalButton').style.display = 'inline-block';
-                document.getElementById('infoText').style.display = 'block';
-                
-                // Отображаем имя пользователя
-                document.getElementById('userNameDisplay').innerHTML = `👤 Вы вошли как: ${currentUser}`;
-                
-                // Сохраняем пользователя в localStorage
-                localStorage.setItem('currentUser', currentUser);
-                
-                // Запускаем обновление
-                updateTimer();
-                updateStatus();
-                startTimers();
-                
-                // Проверяем, нужно ли открыть чат
-                const otherUser = currentUser === 'Ася' ? 'Свят' : 'Ася';
-                const currentSignal = localStorage.getItem(`signal_${currentUser}`);
-                const otherSignal = localStorage.getItem(`signal_${otherUser}`);
-                
-                if (currentSignal && otherSignal) {
-                    openChat();
-                    document.getElementById('miracleMessage').style.display = 'block';
-                    setTimeout(() => {
-                        document.getElementById('miracleMessage').style.display = 'none';
-                    }, 10000);
-                }
-                
-            } else {
+            const name = document.getElementById('usernameInput').value.trim();
+            if (name !== 'Ася' && name !== 'Свят') {
                 alert('Неверное имя');
-                input.value = '';
-            }
-        }
-        
-        // Функция отправки сигнала
-        function sendSignal() {
-            if (!currentUser) {
-                alert('Сначала войдите!');
                 return;
             }
             
-            if (!isButtonActive()) {
-                alert('Кнопка станет доступна 14 февраля 2027 года!');
-                return;
-            }
+            currentUser = name;
+            localStorage.setItem('currentUser', currentUser);
             
-            // Получаем данные другого пользователя
-            const otherUser = currentUser === 'Ася' ? 'Свят' : 'Ася';
-            const otherSignal = localStorage.getItem(`signal_${otherUser}`);
-            const currentSignal = localStorage.getItem(`signal_${currentUser}`);
-            
-            // Если уже нажимали
-            if (currentSignal) {
-                alert('Вы уже отметились!');
-                return;
-            }
-            
-            // Сохраняем сигнал текущего пользователя
-            const now = new Date();
-            const signalData = {
-                user: currentUser,
-                time: now.toLocaleString('ru-RU'),
-                timestamp: now.getTime()
-            };
-            
-            localStorage.setItem(`signal_${currentUser}`, JSON.stringify(signalData));
-            updateStatus();
-            
-            // Проверяем, нажал ли уже другой пользователь
-            if (otherSignal) {
-                // Если оба нажали - показываем чудо и открываем чат
-                document.getElementById('miracleMessage').style.display = 'block';
-                openChat();
-                
-                setTimeout(() => {
-                    document.getElementById('miracleMessage').style.display = 'none';
-                }, 10000);
-                
-                alert(`✨ ЧУДО! ${otherUser} тоже здесь! Невозможное возможно! ✨`);
-            } else {
-                alert(`✅ Сигнал отправлен! Теперь ждём, когда ${otherUser} отметится.`);
-            }
-        }
-        
-        // Функция открытия чата
-        function openChat() {
-            const chatContainer = document.getElementById('chatContainer');
-            chatContainer.style.display = 'block';
-            loadMessages();
-            startMessagePolling();
-        }
-        
-        // Функция отправки сообщения
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            if (!currentUser) return;
-            
-            // Проверяем, что оба пользователя нажали кнопку
-            const otherUser = currentUser === 'Ася' ? 'Свят' : 'Ася';
-            const currentSignal = localStorage.getItem(`signal_${currentUser}`);
-            const otherSignal = localStorage.getItem(`signal_${otherUser}`);
-            
-            if (!currentSignal || !otherSignal) {
-                alert('Чат станет доступен только после того, как вы оба нажмёте "Я здесь!"');
-                return;
-            }
-            
-            const messageData = {
-                id: Date.now(),
-                user: currentUser,
-                message: message,
-                time: new Date().toLocaleString('ru-RU'),
-                timestamp: Date.now()
-            };
-            
-            // Получаем существующие сообщения
-            let messages = JSON.parse(localStorage.getItem('chat_messages') || '[]');
-            messages.push(messageData);
-            
-            // Ограничиваем количество сообщений (последние 100)
-            if (messages.length > 100) {
-                messages = messages.slice(-100);
-            }
-            
-            localStorage.setItem('chat_messages', JSON.stringify(messages));
-            
-            // Очищаем поле ввода
-            input.value = '';
-            
-            // Обновляем отображение
-            loadMessages();
-        }
-        
-        // Функция загрузки сообщений
-        function loadMessages() {
-            const messagesContainer = document.getElementById('chatMessages');
-            const messages = JSON.parse(localStorage.getItem('chat_messages') || '[]');
-            
-            messagesContainer.innerHTML = '';
-            
-            messages.forEach(msg => {
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `chat-message ${msg.user === currentUser ? 'my-message' : 'other-message'}`;
-                
-                messageDiv.innerHTML = `
-                    <div class="chat-sender">${msg.user}</div>
-                    <div>${escapeHtml(msg.message)}</div>
-                    <div class="chat-time">${msg.time}</div>
-                `;
-                
-                messagesContainer.appendChild(messageDiv);
-            });
-            
-            // Прокручиваем вниз
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-        
-        // Функция для безопасного отображения HTML
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // Функция обновления статуса
-        function updateStatus() {
-            if (!currentUser) return;
-            
-            const otherUser = currentUser === 'Ася' ? 'Свят' : 'Ася';
-            const currentSignal = localStorage.getItem(`signal_${currentUser}`);
-            const otherSignal = localStorage.getItem(`signal_${otherUser}`);
-            
-            const statusMessage = document.getElementById('statusMessage');
-            const readyStatus = document.getElementById('readyStatus');
-            const miracleMessage = document.getElementById('miracleMessage');
-            
-            // Обновляем статус текущего пользователя
-            if (currentSignal) {
-                const data = JSON.parse(currentSignal);
-                statusMessage.innerHTML = `✅ Вы отметились! (${data.time})`;
-            } else {
-                statusMessage.innerHTML = `❌ Вы ещё не отметились`;
-            }
-            
-            // Обновляем статус другого пользователя
-            if (otherSignal) {
-                const data = JSON.parse(otherSignal);
-                readyStatus.innerHTML = `<div class="ready-badge">❤️ ${otherUser} уже здесь! (${data.time})</div>`;
-            } else {
-                readyStatus.innerHTML = `<div class="ready-badge">⏳ ${otherUser} ещё не отметился(ась)</div>`;
-            }
-            
-            // Проверяем, нажали ли оба (для случая, если другой нажал раньше)
-            if (currentSignal && otherSignal) {
-                if (miracleMessage.style.display !== 'block') {
-                    miracleMessage.style.display = 'block';
-                    openChat();
-                    setTimeout(() => {
-                        miracleMessage.style.display = 'none';
-                    }, 10000);
-                }
-            }
-        }
-        
-        // Функция обновления таймера
-        function updateTimer() {
-            const timerElement = document.getElementById('timer');
-            const button = document.getElementById('signalButton');
-            const timerTitle = document.getElementById('timerTitle');
-            
-            // Если тестовый режим
-            if (isTestMode()) {
-                timerElement.innerHTML = '🧪 ТЕСТОВЫЙ РЕЖИМ 🧪';
-                timerTitle.innerHTML = 'КНОПКА ДОСТУПНА';
-                button.disabled = false;
-                return;
-            }
-            
-            const now = new Date();
-            const diff = meetingDate - now;
-            
-            if (diff <= 0) {
-                timerElement.innerHTML = '🎉 СЕГОДНЯ! 🎉';
-                timerTitle.innerHTML = 'ВСТРЕЧА НАЧАЛАСЬ';
-                button.disabled = false;
-                if (document.getElementById('statusMessage')) {
-                    document.getElementById('statusMessage').innerHTML = '✨ Сегодня 14 февраля! Кнопка активна ✨';
-                }
-                return;
-            }
-            
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            
-            timerElement.innerHTML = `${days} дн ${hours} ч ${minutes} мин ${seconds} сек`;
-            
-            if (days > 30) {
-                timerTitle.innerHTML = 'ДО ВСТРЕЧИ ОСТАЛОСЬ';
-            } else if (days > 0) {
-                timerTitle.innerHTML = '⚡ СКОРО ВСТРЕЧА! ⚡';
-            } else {
-                timerTitle.innerHTML = '⏰ СЧИТАЕМ ЧАСЫ ⏰';
-            }
-            
-            button.disabled = true;
-        }
-        
-        // Проверка новых сообщений
-        let pollingInterval = null;
-        
-        function startMessagePolling() {
-            if (pollingInterval) clearInterval(pollingInterval);
-            pollingInterval = setInterval(() => {
-                if (currentUser) {
-                    const otherUser = currentUser === 'Ася' ? 'Свят' : 'Ася';
-                    const currentSignal = localStorage.getItem(`signal_${currentUser}`);
-                    const otherSignal = localStorage.getItem(`signal_${otherUser}`);
-                    
-                    if (currentSignal && otherSignal) {
-                        loadMessages();
-                    }
-                }
-            }, 2000);
-        }
-        
-        // Запуск таймеров
-        let timerInterval = null;
-        let statusInterval = null;
-        
-        function startTimers() {
-            if (timerInterval) clearInterval(timerInterval);
-            if (statusInterval) clearInterval(statusInterval);
-            
-            timerInterval = setInterval(updateTimer, 1000);
-            statusInterval = setInterval(updateStatus, 1000);
-        }
-        
-        // Проверяем, был ли уже вход при загрузке страницы
-        const savedUser = localStorage.getItem('currentUser');
-        if (savedUser && (savedUser === 'Ася' || savedUser === 'Свят')) {
-            currentUser = savedUser;
             document.getElementById('authSection').style.display = 'none';
             document.getElementById('userInfo').style.display = 'block';
             document.getElementById('timerContainer').style.display = 'block';
@@ -763,23 +402,23 @@
             document.getElementById('infoText').style.display = 'block';
             document.getElementById('userNameDisplay').innerHTML = `👤 Вы вошли как: ${currentUser}`;
             
-            // Проверяем, нужно ли открыть чат
-            const otherUser = currentUser === 'Ася' ? 'Свят' : 'Ася';
-            const currentSignal = localStorage.getItem(`signal_${currentUser}`);
-            const otherSignal = localStorage.getItem(`signal_${otherUser}`);
-            
-            if (currentSignal && otherSignal) {
-                openChat();
-                document.getElementById('miracleMessage').style.display = 'block';
-                setTimeout(() => {
-                    document.getElementById('miracleMessage').style.display = 'none';
-                }, 10000);
-            }
-            
             updateTimer();
             updateStatus();
-            startTimers();
+            loadMessages();
+            setInterval(updateTimer, 1000);
+            setInterval(updateStatus, 2000);
         }
+        
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser && (savedUser === 'Ася' || savedUser === 'Свят')) {
+            login();
+        }
+        
+        window.login = login;
+        window.logout = logout;
+        window.sendSignal = sendSignal;
+        window.sendMessage = sendMessage;
+        window.onTestModeChange = onTestModeChange;
     </script>
 </body>
 </html>
