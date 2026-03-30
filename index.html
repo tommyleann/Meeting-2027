@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<htl lang="ru">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> 14.02.2027</title>
+    <title>14.02.2027</title>
     
     <!-- Firebase SDK -->
     <script type="module">
@@ -107,7 +107,7 @@
             display: none;
         }
         .timer-title { font-size: 0.9em; opacity: 0.9; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
-        .timer { font-size: 2.5em; font-weight: bold; font-family: 'Courier New', monospace; }
+        .timer { font-size: 2em; font-weight: bold; font-family: 'Courier New', monospace; line-height: 1.4; }
         
         .status {
             background: #f5f5f5;
@@ -168,7 +168,7 @@
         
         @media (max-width: 480px) {
             .container { padding: 25px; }
-            .timer { font-size: 1.5em; letter-spacing: 2px; }
+            .timer { font-size: 1.2em; }
             h1 { font-size: 1.5em; }
             .chat-message { max-width: 95%; }
         }
@@ -191,7 +191,7 @@
         
         <div class="timer-container" id="timerContainer">
             <div class="timer-title" id="timerTitle">скора уж</div>
-            <div class="timer" id="timer">-- ебучих дней -- ебучих часов -- ебучих минут -- ебучих секунд</div>
+            <div class="timer" id="timer"></div>
         </div>
         
         <div class="status" id="statusContainer">
@@ -242,8 +242,9 @@
             const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
             const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
             const seconds = Math.floor((diff % (1000*60)) / 1000);
-            timerEl.innerHTML = `${days} дн ${hours} ч ${minutes} мин ${seconds} сек`;
-            title.innerHTML = days > 30 ? 'ДО ВСТРЕЧИ ОСТАЛОСЬ' : '⚡ СКОРО ВСТРЕЧА! ⚡';
+            
+            timerEl.innerHTML = `${days} ебучих дней ${hours} ебучих часов ${minutes} ебучих минут ${seconds} ебучих секунд`;
+            title.innerHTML = 'скора уж';
             button.disabled = true;
         }
         
