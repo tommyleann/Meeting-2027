@@ -41,28 +41,43 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-image: url('main-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            transition: background 0.5s ease-in-out;
+        }
+        
+        body.miracle-bg {
+            background-image: url('miracle-bg.jpg');
+            background-size: cover;
+            background-position: center;
         }
         
         .container {
-            background: white;
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             text-align: center;
             max-width: 700px;
             width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        body.miracle-bg .container {
+            background: rgba(255, 255, 255, 0.92);
         }
         
         h1 { color: #ff4081; font-size: 2em; margin-bottom: 20px; }
         .date { font-size: 1.5em; color: #667eea; margin-bottom: 30px; font-weight: bold; }
         
         .auth-section {
-            background: #f9f9f9;
+            background: rgba(249, 249, 249, 0.95);
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 25px;
@@ -74,12 +89,14 @@
         .auth-button { background: #667eea; color: white; border: none; padding: 10px 25px; font-size: 1em; border-radius: 10px; cursor: pointer; margin: 5px; }
         .auth-button:hover { transform: scale(1.05); background: #5a67d8; }
         
-        .test-mode { margin-top: 15px; padding: 10px; background: #fff3e0; border-radius: 10px; }
-        .test-mode label { cursor: pointer; color: #e67e22; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        
-        .user-info { background: #e8f5e9; border-radius: 15px; padding: 15px; margin-bottom: 25px; display: none; }
+        .user-info {
+            background: #e8f5e9;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 25px;
+            display: none;
+        }
         .user-name { font-size: 1.2em; color: #2e7d32; font-weight: bold; }
-        .logout-link { margin-top: 10px; font-size: 0.8em; color: #ff4081; cursor: pointer; text-decoration: underline; }
         
         .timer-container {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -92,7 +109,13 @@
         .timer-title { font-size: 0.9em; opacity: 0.9; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
         .timer { font-size: 2.5em; font-weight: bold; font-family: 'Courier New', monospace; }
         
-        .status { background: #f5f5f5; padding: 20px; border-radius: 10px; margin-bottom: 20px; display: none; }
+        .status {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
         .status-text { font-size: 1.1em; color: #333; margin-bottom: 10px; }
         .other-status { font-size: 0.95em; color: #666; margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; }
         
@@ -160,14 +183,10 @@
             <div class="auth-title">✨ Кто ты? ✨</div>
             <input type="text" class="auth-input" id="usernameInput" placeholder="Введите имя">
             <button class="auth-button" onclick="login()">Войти</button>
-            <div class="test-mode">
-                <label><input type="checkbox" id="testModeCheckbox" onchange="onTestModeChange()"> 🧪 Тестовый режим (кнопка доступна сейчас)</label>
-            </div>
         </div>
         
         <div class="user-info" id="userInfo">
             <div class="user-name" id="userNameDisplay"></div>
-            <div class="logout-link" onclick="logout()">🚪 Выйти</div>
         </div>
         
         <div class="timer-container" id="timerContainer">
@@ -200,13 +219,7 @@
         const meetingDate = new Date(2027, 1, 14, 0, 0, 0);
         let currentUser = null;
         
-        function isTestMode() {
-            const checkbox = document.getElementById('testModeCheckbox');
-            return checkbox ? checkbox.checked : false;
-        }
-        
         function isButtonActive() {
-            if (isTestMode()) return true;
             return new Date() >= meetingDate;
         }
         
@@ -215,14 +228,9 @@
             const button = document.getElementById('signalButton');
             const title = document.getElementById('timerTitle');
             
-            if (isTestMode()) {
-                timerEl.innerHTML = '🧪 ТЕСТОВЫЙ РЕЖИМ 🧪';
-                title.innerHTML = 'КНОПКА ДОСТУПНА';
-                button.disabled = false;
-                return;
-            }
+            const now = new Date();
+            const diff = meetingDate - now;
             
-            const diff = meetingDate - new Date();
             if (diff <= 0) {
                 timerEl.innerHTML = '🎉 СЕГОДНЯ! 🎉';
                 title.innerHTML = 'ВСТРЕЧА НАЧАЛАСЬ';
@@ -254,6 +262,7 @@
                 const otherDiv = document.getElementById('otherStatus');
                 const miracleMsg = document.getElementById('miracleMessage');
                 const chatContainer = document.getElementById('chatContainer');
+                const body = document.body;
                 
                 if (mySignal) {
                     statusMsg.innerHTML = `✅ Вы отметились! (${mySignal.time})`;
@@ -262,8 +271,11 @@
                         if (miracleMsg.style.display !== 'block') {
                             miracleMsg.style.display = 'block';
                             chatContainer.style.display = 'block';
+                            body.classList.add('miracle-bg');
                             loadMessages();
-                            setTimeout(() => { miracleMsg.style.display = 'none'; }, 10000);
+                            setTimeout(() => { 
+                                miracleMsg.style.display = 'none';
+                            }, 10000);
                         }
                     } else {
                         otherDiv.innerHTML = `<div class="ready-badge">⏳ ${otherUser} ещё не отметился(ась)</div>`;
@@ -365,25 +377,6 @@
             return div.innerHTML;
         }
         
-        function onTestModeChange() {
-            updateTimer();
-            if (currentUser) updateStatus();
-        }
-        
-        function logout() {
-            localStorage.removeItem('currentUser');
-            currentUser = null;
-            document.getElementById('authSection').style.display = 'block';
-            document.getElementById('userInfo').style.display = 'none';
-            document.getElementById('timerContainer').style.display = 'none';
-            document.getElementById('statusContainer').style.display = 'none';
-            document.getElementById('signalButton').style.display = 'none';
-            document.getElementById('infoText').style.display = 'none';
-            document.getElementById('chatContainer').style.display = 'none';
-            document.getElementById('miracleMessage').style.display = 'none';
-            document.getElementById('usernameInput').value = '';
-        }
-        
         function login() {
             const name = document.getElementById('usernameInput').value.trim();
             if (name !== 'Ася' && name !== 'Свят') {
@@ -415,10 +408,8 @@
         }
         
         window.login = login;
-        window.logout = logout;
         window.sendSignal = sendSignal;
         window.sendMessage = sendMessage;
-        window.onTestModeChange = onTestModeChange;
     </script>
 </body>
 </html>
