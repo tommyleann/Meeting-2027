@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Встреча 14 февраля 2027</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        h1 {
+            color: #ff4081;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        
+        .date {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+        
+        .message {
+            font-size: 1.2em;
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .status {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .status-text {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .signal {
+            background: #ff4081;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .signal:hover {
+            transform: scale(1.05);
+            background: #e91e63;
+        }
+        
+        .signal:active {
+            transform: scale(0.95);
+        }
+        
+        .info {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #999;
+        }
+        
+        .ready-badge {
+            display: inline-block;
+            background: #4caf50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>❤️ Наша встреча ❤️</h1>
+        <div class="date">14 февраля 2027 года</div>
+        <div class="message">
+            Если мы оба здесь — значит, мы готовы.<br>
+            Это наше секретное место.
+        </div>
+        
+        <div class="status">
+            <div class="status-text" id="statusMessage">Загрузка...</div>
+            <div id="readyStatus"></div>
+        </div>
+        
+        <button class="signal" onclick="sendSignal()">✨ Я здесь! ✨</button>
+        
+        <div class="info">
+            Нажмите кнопку, чтобы другой человек узнал, что вы готовы.<br>
+            Данные сохраняются в вашем браузере.
+        </div>
+    </div>
+
+    <script>
+        // Функция для сохранения сигнала
+        function sendSignal() {
+            const now = new Date();
+            const signalData = {
+                signaled: true,
+                time: now.toLocaleString('ru-RU'),
+                date: now.toISOString()
+            };
+            
+            localStorage.setItem('meeting2027', JSON.stringify(signalData));
+            updateStatus();
+            alert('✅ Сигнал отправлен! Теперь другой человек увидит, что вы готовы.');
+        }
+        
+        // Функция для обновления статуса
+        function updateStatus() {
+            const saved = localStorage.getItem('meeting2027');
+            const statusMessage = document.getElementById('statusMessage');
+            const readyStatus = document.getElementById('readyStatus');
+            
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.signaled) {
+                    statusMessage.innerHTML = '✅ Вы уже отметились!';
+                    readyStatus.innerHTML = `<div class="ready-badge">Вы здесь с ${data.time}</div>`;
+                }
+            } else {
+                statusMessage.innerHTML = '❌ Вы еще не отметились';
+                readyStatus.innerHTML = '';
+            }
+        }
+        
+        // Проверяем статус при загрузке страницы
+        updateStatus();
+        
+        // Проверяем каждые 5 секунд, не изменился ли статус (для синхронизации)
+        setInterval(() => {
+            updateStatus();
+        }, 5000);
+    </script>
+</body>
+</html>
