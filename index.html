@@ -44,13 +44,6 @@
             font-weight: bold;
         }
         
-        .message {
-            font-size: 1.2em;
-            color: #555;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-        
         .auth-section {
             background: #f9f9f9;
             border-radius: 15px;
@@ -90,11 +83,20 @@
             border-radius: 10px;
             cursor: pointer;
             transition: transform 0.2s;
+            margin: 5px;
         }
         
         .auth-button:hover {
             transform: scale(1.05);
             background: #5a67d8;
+        }
+        
+        .reset-button {
+            background: #ff9800;
+        }
+        
+        .reset-button:hover {
+            background: #f57c00;
         }
         
         .test-mode {
@@ -108,6 +110,10 @@
             cursor: pointer;
             color: #e67e22;
             font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         .user-info {
@@ -122,6 +128,14 @@
             font-size: 1.2em;
             color: #2e7d32;
             font-weight: bold;
+        }
+        
+        .logout-link {
+            margin-top: 10px;
+            font-size: 0.8em;
+            color: #ff4081;
+            cursor: pointer;
+            text-decoration: underline;
         }
         
         .timer-container {
@@ -290,11 +304,6 @@
             font-size: 1em;
         }
         
-        .chat-input:focus {
-            outline: none;
-            border-color: #ff4081;
-        }
-        
         .chat-send {
             background: #ff4081;
             color: white;
@@ -346,7 +355,7 @@
             <!-- Тестовый режим -->
             <div class="test-mode">
                 <label>
-                    <input type="checkbox" id="testModeCheckbox"> 🧪 Тестовый режим (кнопка доступна сейчас)
+                    <input type="checkbox" id="testModeCheckbox" onchange="onTestModeChange()"> 🧪 Тестовый режим (кнопка доступна сейчас)
                 </label>
             </div>
         </div>
@@ -354,6 +363,7 @@
         <!-- Информация о пользователе -->
         <div class="user-info" id="userInfo">
             <div class="user-name" id="userNameDisplay"></div>
+            <div class="logout-link" onclick="logout()">🚪 Выйти и сменить пользователя</div>
         </div>
         
         <!-- Таймер -->
@@ -410,11 +420,39 @@
             return checkbox ? checkbox.checked : false;
         }
         
+        // Обработчик изменения тестового режима
+        function onTestModeChange() {
+            updateTimer();
+            // Если кнопка стала активной, обновляем статус
+            if (currentUser) {
+                updateStatus();
+            }
+        }
+        
         // Проверка, доступна ли кнопка
         function isButtonActive() {
             if (isTestMode()) return true;
             const now = new Date();
             return now >= meetingDate;
+        }
+        
+        // Выход из аккаунта
+        function logout() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            
+            // Показываем секцию входа
+            document.getElementById('authSection').style.display = 'block';
+            document.getElementById('userInfo').style.display = 'none';
+            document.getElementById('timerContainer').style.display = 'none';
+            document.getElementById('statusContainer').style.display = 'none';
+            document.getElementById('signalButton').style.display = 'none';
+            document.getElementById('infoText').style.display = 'none';
+            document.getElementById('chatContainer').style.display = 'none';
+            document.getElementById('miracleMessage').style.display = 'none';
+            
+            // Очищаем поле ввода
+            document.getElementById('usernameInput').value = '';
         }
         
         // Функция входа
@@ -445,6 +483,19 @@
                 updateTimer();
                 updateStatus();
                 startTimers();
+                
+                // Проверяем, нужно ли открыть чат
+                const otherUser = currentUser === 'Ася' ? 'Свят' : 'Ася';
+                const currentSignal = localStorage.getItem(`signal_${currentUser}`);
+                const otherSignal = localStorage.getItem(`signal_${otherUser}`);
+                
+                if (currentSignal && otherSignal) {
+                    openChat();
+                    document.getElementById('miracleMessage').style.display = 'block';
+                    setTimeout(() => {
+                        document.getElementById('miracleMessage').style.display = 'none';
+                    }, 10000);
+                }
                 
             } else {
                 alert('Неверное имя');
@@ -676,20 +727,28 @@
         function startMessagePolling() {
             if (pollingInterval) clearInterval(pollingInterval);
             pollingInterval = setInterval(() => {
-                const currentSignal = localStorage.getItem(`signal_${currentUser}`);
-                const otherUser = currentUser === 'Ася' ? 'Свят' : 'Ася';
-                const otherSignal = localStorage.getItem(`signal_${otherUser}`);
-                
-                if (currentSignal && otherSignal) {
-                    loadMessages();
+                if (currentUser) {
+                    const otherUser = currentUser === 'Ася' ? 'Свят' : 'Ася';
+                    const currentSignal = localStorage.getItem(`signal_${currentUser}`);
+                    const otherSignal = localStorage.getItem(`signal_${otherUser}`);
+                    
+                    if (currentSignal && otherSignal) {
+                        loadMessages();
+                    }
                 }
             }, 2000);
         }
         
         // Запуск таймеров
+        let timerInterval = null;
+        let statusInterval = null;
+        
         function startTimers() {
-            setInterval(updateTimer, 1000);
-            setInterval(updateStatus, 1000);
+            if (timerInterval) clearInterval(timerInterval);
+            if (statusInterval) clearInterval(statusInterval);
+            
+            timerInterval = setInterval(updateTimer, 1000);
+            statusInterval = setInterval(updateStatus, 1000);
         }
         
         // Проверяем, был ли уже вход при загрузке страницы
@@ -721,13 +780,6 @@
             updateStatus();
             startTimers();
         }
-        
-        // Слушатель для тестового режима
-        setInterval(() => {
-            if (currentUser) {
-                updateTimer();
-            }
-        }, 100);
     </script>
 </body>
 </html>
