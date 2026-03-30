@@ -97,6 +97,19 @@
             background: #5a67d8;
         }
         
+        .test-mode {
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff3e0;
+            border-radius: 10px;
+        }
+        
+        .test-mode label {
+            cursor: pointer;
+            color: #e67e22;
+            font-size: 0.9em;
+        }
+        
         .user-info {
             background: #e8f5e9;
             border-radius: 15px;
@@ -207,7 +220,6 @@
             display: none;
         }
         
-        /* Стили для чата */
         .chat-container {
             margin-top: 30px;
             border-top: 2px solid #e0e0e0;
@@ -330,6 +342,13 @@
             <div class="auth-title">✨ Кто ты? ✨</div>
             <input type="text" class="auth-input" id="usernameInput" placeholder="Введите имя">
             <button class="auth-button" onclick="login()">Войти</button>
+            
+            <!-- Тестовый режим -->
+            <div class="test-mode">
+                <label>
+                    <input type="checkbox" id="testModeCheckbox"> 🧪 Тестовый режим (кнопка доступна сейчас)
+                </label>
+            </div>
         </div>
         
         <!-- Информация о пользователе -->
@@ -385,6 +404,19 @@
         // Текущий пользователь
         let currentUser = null;
         
+        // Проверка тестового режима
+        function isTestMode() {
+            const checkbox = document.getElementById('testModeCheckbox');
+            return checkbox ? checkbox.checked : false;
+        }
+        
+        // Проверка, доступна ли кнопка
+        function isButtonActive() {
+            if (isTestMode()) return true;
+            const now = new Date();
+            return now >= meetingDate;
+        }
+        
         // Функция входа
         function login() {
             const input = document.getElementById('usernameInput');
@@ -415,7 +447,7 @@
                 startTimers();
                 
             } else {
-                alert('Неверное имя. Попробуйте "Ася" или "Свят"');
+                alert('Неверное имя');
                 input.value = '';
             }
         }
@@ -427,9 +459,7 @@
                 return;
             }
             
-            const now = new Date();
-            
-            if (now < meetingDate) {
+            if (!isButtonActive()) {
                 alert('Кнопка станет доступна 14 февраля 2027 года!');
                 return;
             }
@@ -446,6 +476,7 @@
             }
             
             // Сохраняем сигнал текущего пользователя
+            const now = new Date();
             const signalData = {
                 user: currentUser,
                 time: now.toLocaleString('ru-RU'),
@@ -596,12 +627,20 @@
         
         // Функция обновления таймера
         function updateTimer() {
-            const now = new Date();
-            const diff = meetingDate - now;
-            
             const timerElement = document.getElementById('timer');
             const button = document.getElementById('signalButton');
             const timerTitle = document.getElementById('timerTitle');
+            
+            // Если тестовый режим
+            if (isTestMode()) {
+                timerElement.innerHTML = '🧪 ТЕСТОВЫЙ РЕЖИМ 🧪';
+                timerTitle.innerHTML = 'КНОПКА ДОСТУПНА';
+                button.disabled = false;
+                return;
+            }
+            
+            const now = new Date();
+            const diff = meetingDate - now;
             
             if (diff <= 0) {
                 timerElement.innerHTML = '🎉 СЕГОДНЯ! 🎉';
@@ -682,6 +721,13 @@
             updateStatus();
             startTimers();
         }
+        
+        // Слушатель для тестового режима
+        setInterval(() => {
+            if (currentUser) {
+                updateTimer();
+            }
+        }, 100);
     </script>
 </body>
 </html>
